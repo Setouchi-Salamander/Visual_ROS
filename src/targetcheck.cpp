@@ -45,25 +45,19 @@ class ImageConverter{
       // RGB表色系をHSV表色系へ変換して、hsv_imageに格納
       cv::cvtColor(cv_ptr->image, hsv_image, CV_BGR2HSV);
 
-      // 色相(Hue), 彩度(Saturation), 明暗(Value, brightness) 
-      // 指定した範囲の色でマスク画像color_mask(CV_8U:符号なし8ビット整数)を生成  
+      
       // マスク画像は指定した範囲の色に該当する要素は255(8ビットすべて1)、それ以外は0                                                      
       //cv::inRange(hsv_image, cv::Scalar(0, 0, 100, 0) , cv::Scalar(180, 45, 255, 0), color_mask);       // 白
       //cv::inRange(hsv_image, cv::Scalar(150, 100, 50, 0) , cv::Scalar(180, 255, 255, 0), color_mask);   // 赤
       cv::inRange(hsv_image, cv::Scalar(20, 50, 50, 0) , cv::Scalar(100, 255, 255, 0), color_mask);   // 黄
 
-      // ビット毎の論理積。マスク画像は指定した範囲以外は0で、指定範囲の要素は255なので、ビット毎の論理積を適用すると、指定した範囲の色に対応する要素はそのままで、他は0になる。
+      
       cv::bitwise_and(cv_ptr->image, cv_ptr->image, cv_image2, color_mask);
       // グレースケールに変換
       cv::cvtColor(cv_image2, gray_image, CV_BGR2GRAY);
       // 閾値70で2値画像に変換
       cv::threshold(gray_image, bin_image, 80, 255, CV_THRESH_BINARY); 
 
-      // エッジを検出するためにCannyアルゴリズムを適用
-      //cv::Canny(gray_image, cv_ptr3->image, 15.0, 30.0, 3);
-
-      // ウインドウに円を描画                                                
-      //cv::circle(cv_ptr->image, cv::Point(100, 100), 20, CV_RGB(0,255,0));
 
       // 輪郭を格納するcontoursにfindContours関数に渡すと輪郭を点の集合として入れてくれる
       std::vector<std::vector<cv::Point>> contours;
@@ -109,8 +103,7 @@ class ImageConverter{
       // ウインドウ表示                                                                         
       cv::imshow("Original Image", cv_half_image);
       cv::imshow("Result Image", cv_half_image2);
-      //cv::imshow("Edge Image", cv_half_image3);
-      //cv::imshow("Gray Image", cv_half_image4);
+ 
       cv::imshow("Binary Image", cv_half_image5);
       cv::waitKey(3);
   
