@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
 
   //1秒間に1つのメッセージをPublishする
-  ros::Rate loop_rate(1);
+  ros::Rate loop_rate(10);
 
   //comp_tutrial::adder型のオブジェクトを定義
   //adder.msgで定義したa,bはメンバ変数としてアクセスできる
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     msg.x = count;
     msg.y = count;
     para_pub.publish(msg);//PublishのAPI
-    printf("a = %d b = %d \n",msg.x , msg.y );
+    printf("x = %d y = %d \n",msg.x , msg.y );
     ros::spinOnce();
     loop_rate.sleep();
     count++;
