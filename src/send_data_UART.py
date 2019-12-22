@@ -8,17 +8,25 @@ import struct
 import time
 
 # Subscribeする対象のトピックが更新されたら呼び出されるコールバック関数
-# 引数にはトピックにPublishされるメッセージの型と同じ型を定義する
 def callback(data):
-    data_x_high= (data.x & 0xFF00)>>8
-    data_x_low= data.x & 0x00FF
-    data_y_high= (data.y & 0xFF00)>>8
-    data_y_low= data.y & 0x00FF
+    # 座標
+        # -32768 ~ 32627 -> 0 ~ 32767 ~ 65534
+        # -32768  -> 0
+        # 0 -> 32767
+        # 32627  -> 65534
+
+    data_x_high= (data.x+ 32767 & 0xFF00)>>8
+    data_x_low= data.x+ 32767 & 0x00FF
+    data_y_high= (data.y+ 32767 & 0xFF00)>>8
+    data_y_low= data.y+ 32767 & 0x00FF
+    #補足した数
+        #0~128  マイナスにはならないはず。マイナスにならんように注意して書いて
+
     data_cnt=data.cnt_taget
-    print "x=%d y=%d cnt=%d x_high=%x x_low=%x y_high=%x y_low=%x   "%(data.x ,data.y,data.cnt_taget,data_x_high,data_x_low,data_y_high,data_y_low)
+    print "x=%d y=%d cnt=%d x_high=%x x_low=%x y_high=%x y_low=%x  "%(data.x ,data.y,data.cnt_taget,data_x_high,data_x_low,data_y_high,data_y_low)
 
     try:
-        port = serial . Serial ( # open port serail0 ,921600
+        port = serial . Serial ( # open port serail0 ,115200
         port = "/ dev / serial0 " ,
         baudrate =115200 ,
         parity = serial . PARITY_NONE ,
