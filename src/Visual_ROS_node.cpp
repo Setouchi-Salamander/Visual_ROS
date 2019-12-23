@@ -14,6 +14,8 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
 
+
+
   //Publisherとしての定義
   // n.advertise<comp_tutorial::adder>("para_input", 1000);
   // comp_tutorial::adder型のメッセージをpara_inputというトピックへ配信する
