@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python2
+# coding: UTF-8
 # license removed for brevity
 import rospy
 from Visual_ROS.msg import data
@@ -23,7 +23,7 @@ def callback(data):
         #0~128  マイナスにはならないはず。マイナスにならんように注意して書いて
 
     data_cnt=data.cnt_taget
-    print "x=%d y=%d cnt=%d x_high=%x x_low=%x y_high=%x y_low=%x  "%(data.x ,data.y,data.cnt_taget,data_x_high,data_x_low,data_y_high,data_y_low)
+    rospy.loginfo("x=%d y=%d cnt=%d x_high=%x x_low=%x y_high=%x y_low=%x ",data.x ,data.y,data.cnt_taget,data_x_high,data_x_low,data_y_high,data_y_low)
 
     try:
         port = serial . Serial ( # open port serail0 ,115200

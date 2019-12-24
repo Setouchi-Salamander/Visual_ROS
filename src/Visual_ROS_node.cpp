@@ -7,7 +7,7 @@
 int main(int argc, char **argv)
 {
   // 初期化のためのAPI
-  ros::init(argc, argv, "para_in");
+  ros::init(argc, argv, "Visual_ROS_node");
   // このノードは"para_in"という名前であるという意味
   
   // ノードハンドラの宣言
