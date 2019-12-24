@@ -33,7 +33,7 @@ int main(int argc, char **argv)
   int count = 0;
   while (ros::ok())//ノードが実行中は基本的にros::ok()=1
   {
-    msg.x = count;
+    msg.x = count+1;
     msg.y = count;
     para_pub.publish(msg);//PublishのAPI
     printf("x = %d y = %d \n",msg.x , msg.y );

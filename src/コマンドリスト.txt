@@ -1,0 +1,3 @@
+rosrun Visual_ROS Visual_ROS_node  画像処理起動
+rosrun Visual_ROS send_data_UART.py　通信起動
+
