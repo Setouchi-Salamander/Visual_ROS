@@ -27,7 +27,7 @@ def callback(data):
 
     try:
         port = serial . Serial ( # open port serail0 ,115200
-        port = "/ dev / serial0 " ,
+        port = "/dev/ttyUSB0" ,
         baudrate =115200 ,
         parity = serial . PARITY_NONE ,
         stopbits = serial . STOPBITS_ONE ,
