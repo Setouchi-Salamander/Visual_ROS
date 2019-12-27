@@ -8,9 +8,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
-#include <opencv2/opencv.hpp>
 
-#include "Visual_ROS/data.h"
+#include <opencv2/opencv.hpp>
 
 #define POINT_DIST(p1,p2) std::sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y))
 
@@ -92,18 +91,15 @@ class Lockon{
   image_transport::Subscriber image_sub_;
   image_transport::Publisher image_pub_;
 
-    
     public:
     // コンストラクタ
     Lockon() : it_(nh_){
-
-    printf("start \n");
-    
       // カラー画像をサブスクライブ                                                                
       image_sub_ = it_.subscribe("/image_raw", 1, &Lockon::imageLock, this);
       // 処理した画像をパブリッシュ                                                                                          
       image_pub_ = it_.advertise("/image_topic", 1);
-          
+      
+      
     }
 
     // デストラクタ
@@ -116,6 +112,7 @@ class Lockon{
 	{
 		start = clock();//実行時間計測開始
 
+		float radius;
 
     		  try{
     		    // ROSからOpenCVの形式にtoCvCopy()で変換。cv_ptr->imageがcv::Matフォーマット。
@@ -127,24 +124,19 @@ class Lockon{
     		  }
 
 		//画像赤
-		Org_Img = imread("/home/okadatech/catkin_ws/src/Visual_ROS/src/2019-10-27-211204.jpg", 	IMREAD_UNCHANGED); 
-
+		//Org_Img = imread("./input/2019-10-27-211204.jpg", 	IMREAD_UNCHANGED); 
 		//画像青
-		//Org_Img = imread("./input/2019-10-27-211204.jpg", 	IMREAD_UNCHANGED);
+		Org_Img = imread("./input/2019-10-27-211134.jpg", 	IMREAD_UNCHANGED);
 	
 	
 		Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
 	
-
 		//HSV
 		//cv::cvtColor(Org_Img,Hsv_Img,COLOR_BGR2HSV);
-
 		//RGB
 		cv::cvtColor(Org_Img, Rgb_Img, COLOR_BGR2RGB);
-
 		//RGB(GRAY)
 		cv::cvtColor(Org_Img, Gray_Img, COLOR_BGR2GRAY);
-    
 	
 		//マスク処理（赤）
 		// cv::inRange(Hsv_Img, cv::Scalar(150, 100, 180, 0), 			cv::Scalar(180, 255, 255, 0), Mask_Img);
@@ -156,6 +148,7 @@ class Lockon{
 		//cv::inRange(Hsv_Img, cv::Scalar(100, 200, 220, 0),cv::Scalar(120, 255, 255, 0), Mask_Img);
 		cv::inRange(Rgb_Img, cv::Scalar(0, 0, 253, 0), cv::Scalar(255, 255, 255, 0), Mask_Img);
 	
+
 		//GRAYの2値化
 		threshold(Gray_Img, Mask_Img2, 190, 255, THRESH_BINARY);
 	
@@ -226,18 +219,13 @@ class Lockon{
 		///////////////////////////////////// 一致するライトバーの条件 //////////////////////////////////////////////////////
 		//それらを1つずつ比較し、要件を満たしている場合は、ターゲット回転長方形を形成します。
 			for (size_t i = 0; i < RectFirstResult.size() - 1; ++i) {
-
 				const RotatedRect& rect_i = RectFirstResult[i];
-
 				const Point& center_i = rect_i.center;
-
 				float xi = center_i.x;
 				float yi = center_i.y;
 				float leni = MAX(rect_i.size.width, rect_i.size.height);
 				float anglei = fabs(rect_i.angle);
-
 				rect_i.points(_pt);
-
 				/*pt
 				 * 0 2
 				 * 1 3
@@ -338,14 +326,15 @@ class Lockon{
 			}
 
 
-
 		}
 		catch (ErrorCallback) {
 
 		}
 
+
 		 time_end = clock();//実行時間計測終了
 	
+		 
 	
 	
 		//結果表示
@@ -353,14 +342,6 @@ class Lockon{
 		cv::imshow("Result", Org_Img);
 		cv::imshow("Result2", Bin_Img2);
 		cv::waitKey(3);
-
-
-    ros::NodeHandle n;
-    ros::Publisher para_pub = n.advertise<Visual_ROS::data>("Visual_ROS_node", 1000);
-    para_pub.publish(msg);//PublishのAPI
-
-    printf("runnning \n");
-    
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
       		image_pub_.publish(cv_ptr3->toImageMsg());
 	}
@@ -369,8 +350,7 @@ class Lockon{
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "Visual_ROS_node");
-  Visual_ROS::data msg;		 
+  ros::init(argc, argv, "image_converter");
   Lockon ic;
   ros::spin();
   return 0;
