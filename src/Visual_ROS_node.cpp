@@ -10,7 +10,7 @@
 #include <time.h>
 #include <opencv2/opencv.hpp>
 
-#include "Visual_ROS/data.h"
+#include <Visual_ROS/data.h>
 
 #define POINT_DIST(p1,p2) std::sqrt((p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y))
 
@@ -53,6 +53,7 @@ Mat Result_Img;//ラベル付け画像
 Mat stats;
 Mat centroids;
 
+
 cv::Point2f center,center2, p1;
 cv_bridge::CvImagePtr cv_ptr, cv_ptr2, cv_ptr3;
 
@@ -92,6 +93,11 @@ class Lockon{
   image_transport::Subscriber image_sub_;
   image_transport::Publisher image_pub_;
 
+  ros::NodeHandle n;
+  ros::Publisher para_pub = n.advertise<Visual_ROS::data>("Visual_ROS_node", 1000);
+
+  Visual_ROS::data msg_data;
+  int count = 0;
     
     public:
     // コンストラクタ
@@ -103,6 +109,7 @@ class Lockon{
       image_sub_ = it_.subscribe("/image_raw", 1, &Lockon::imageLock, this);
       // 処理した画像をパブリッシュ                                                                                          
       image_pub_ = it_.advertise("/image_topic", 1);
+
           
     }
 
@@ -132,7 +139,7 @@ class Lockon{
 		//画像青
 		//Org_Img = imread("./input/2019-10-27-211204.jpg", 	IMREAD_UNCHANGED);
 	
-	
+
 		Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
 	
 
@@ -174,7 +181,7 @@ class Lockon{
 
 		cv::findContours(Bin_Img2, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);    // 輪郭線を格納
 
-
+	
 		try {
 	
 			// 輪郭を直線で近似して、勾配範囲に適合する輪郭を見つけます
@@ -238,10 +245,10 @@ class Lockon{
 
 				rect_i.points(_pt);
 
-				/*pt
-				 * 0 2
-				 * 1 3
-				 * */
+				//pt
+				// 0 2
+				// 1 3
+				 
 				 // 右に傾いた長いライトバー
 				 // rRect.points注文済み，y最小のポイントは0,時計回り1 2 3
 				if (anglei > 45.0) {
@@ -300,13 +307,6 @@ class Lockon{
 					bool condition3 = lr_rate < max_lr_rate;
 					//                bool condition4 = angleabs < 15 ; // 動きを防止するための大規模なフレームを指摘
 					bool condition4;
-					//if (!base_mode)
-						//condition4 = sentry_mode ? angleabs < 25 : angleabs < 15 - 5;
-					//else
-					//	condition4 = angleabs > 25 && angleabs < 55;
-					//                bool condition5 = sentry_mode ? true : /*maxangle < 20*/true;
-
-					//            bool condition4 = delta_angle < _para.max_light_delta_angle;
 
 					Point text_center = Point((xi + xj) / 2, (yi + yj) / 2);
 
@@ -351,18 +351,20 @@ class Lockon{
 		//結果表示
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
 		cv::imshow("Result", Org_Img);
+
 		cv::imshow("Result2", Bin_Img2);
 		cv::waitKey(3);
 
 
-    ros::NodeHandle n;
-    ros::Publisher para_pub = n.advertise<Visual_ROS::data>("Visual_ROS_node", 1000);
-    para_pub.publish(msg);//PublishのAPI
-
-    printf("runnning \n");
     
+    msg_data.x = count;
+    msg_data.y = count;
+    count++;
+    printf("x = %d y = %d \n",msg_data.x , msg_data.y );
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
-      		image_pub_.publish(cv_ptr3->toImageMsg());
+    image_pub_.publish(cv_ptr3->toImageMsg());
+
+    para_pub.publish(msg_data);//PublishのAPI
 	}
 
 };
@@ -370,7 +372,6 @@ class Lockon{
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "Visual_ROS_node");
-  Visual_ROS::data msg;		 
   Lockon ic;
   ros::spin();
   return 0;
