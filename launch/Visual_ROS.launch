@@ -1,5 +1,5 @@
 <launch>
    <node pkg="Visual_ROS" name="sender" type="send_data_UART.py"  output="screen"/>
    <node pkg="Visual_ROS" name="Visual_ROS_node" type="Visual_ROS_node"/>
-   
+   <node pkg="uvc_camera" name="uvc_camera_node" type="uvc_camera_node"/>
 </launch>

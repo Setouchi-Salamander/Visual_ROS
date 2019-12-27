@@ -343,7 +343,6 @@ class Lockon{
 		catch (ErrorCallback) {
 
 		}
-
 		 time_end = clock();//実行時間計測終了
 	
 	
