@@ -54,7 +54,7 @@ Mat stats;
 Mat centroids;
 
 
-cv::Point2f center,center2, p1;
+cv::Point2f center,center2, result_pt;
 cv_bridge::CvImagePtr cv_ptr, cv_ptr2, cv_ptr3;
 
 static const std::string OPENCV_WINDOW = "Image window";
@@ -121,8 +121,6 @@ class Lockon{
    // コールバック関数
 	void imageLock(const sensor_msgs::ImageConstPtr& msg)
 	{
-		start = clock();//実行時間計測開始
-
 
     		  try{
     		    // ROSからOpenCVの形式にtoCvCopy()で変換。cv_ptr->imageがcv::Matフォーマット。
@@ -133,12 +131,9 @@ class Lockon{
        			 return;
     		  }
 
-		//画像赤
-		Org_Img = imread("/home/okadatech/catkin_ws/src/Visual_ROS/src/2019-10-27-211204.jpg", 	IMREAD_UNCHANGED); 
+		//ROS画像
+		Org_Img = cv_ptr->image;
 
-		//画像青
-		//Org_Img = imread("./input/2019-10-27-211204.jpg", 	IMREAD_UNCHANGED);
-	
 
 		Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
 	
@@ -185,7 +180,7 @@ class Lockon{
 		try {
 	
 			// 輪郭を直線で近似して、勾配範囲に適合する輪郭を見つけます
-			vector<RotatedRect> RectFirstResult;
+			std::vector<RotatedRect> RectFirstResult;
 			for (size_t i = 0; i < contours.size(); ++i) {
 				// fit the lamp contour as a eclipse
 				RotatedRect rrect = minAreaRect(contours[i]);
@@ -217,7 +212,10 @@ class Lockon{
 
 			// 2本未満のライトバーは一致しないと見なされます
 			if (RectFirstResult.size() < 2) {
-	
+				printf("nothing \n");
+				result_pt.x = -Org_Img.cols/2;
+				result_pt.y = -Org_Img.rows/2;
+       				 goto result;
 			}
 
 			// 回転した長方形を左から右に並べ替えます
@@ -308,7 +306,7 @@ class Lockon{
 					//                bool condition4 = angleabs < 15 ; // 動きを防止するための大規模なフレームを指摘
 					bool condition4;
 
-					Point text_center = Point((xi + xj) / 2, (yi + yj) / 2);
+					Point2f text_center = Point2f((xi + xj) / 2, (yi + yj) / 2);
 
 
 
@@ -333,6 +331,7 @@ class Lockon{
 						for (int i = 0; i < 4; i++)
 							line(Org_Img, vertice[i], vertice[(i + 1) % 4], Scalar(255, 255, 255), 2);
 						cv::circle(Org_Img, text_center, 4, Scalar(0, 255, 0), 2);
+						result_pt = Point2f((xi + xj) / 2, (yi + yj) / 2);
 					}
 				}
 			}
@@ -343,11 +342,12 @@ class Lockon{
 		catch (ErrorCallback) {
 
 		}
-		 time_end = clock();//実行時間計測終了
+
 	
 	
 	
 		//結果表示
+		result:
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
 		cv::imshow("Result", Org_Img);
 
@@ -356,8 +356,8 @@ class Lockon{
 
 
     
-    msg_data.x = count;
-    msg_data.y = count;
+    msg_data.x = result_pt.x - Org_Img.cols/2;
+    msg_data.y = -(result_pt.y - Org_Img.rows/2);
     count++;
     printf("x = %d y = %d \n",msg_data.x , msg_data.y );
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
