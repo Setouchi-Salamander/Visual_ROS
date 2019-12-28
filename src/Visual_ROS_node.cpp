@@ -217,8 +217,8 @@ class Lockon{
 				result_pt.y = -Org_Img.rows/2;
 					
 				msg_data.cnt_taget=0;
-       				 goto result;
 			}
+			else{
 
 				msg_data.cnt_taget=1;
 			// 回転した長方形を左から右に並べ替えます
@@ -339,7 +339,7 @@ class Lockon{
 				}
 			}
 
-
+			}
 
 		}
 		catch (ErrorCallback) {
@@ -350,7 +350,6 @@ class Lockon{
 	
 	
 		//結果表示
-		result:
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
 		cv::imshow("Result", Org_Img);
 
