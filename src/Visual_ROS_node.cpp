@@ -354,7 +354,7 @@ class Lockon{
 		cv::imshow("Result", Org_Img);
 
 		cv::imshow("Result2", Bin_Img2);
-		cv::waitKey(3);
+		cv::waitKey(1);
 
 
     
