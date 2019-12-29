@@ -6,9 +6,11 @@ from Visual_ROS.msg import data
 import serial
 import struct
 import time
+check=0
 
 # Subscribeする対象のトピックが更新されたら呼び出されるコールバック関数
 def callback(data):
+    global check
     # 座標
         # -32768 ~ 32627 -> 0 ~ 32767 ~ 65534
         # -32768  -> 0
@@ -23,7 +25,12 @@ def callback(data):
         #0~128  マイナスにはならないはず。マイナスにならんように注意して書いて
 
     data_cnt=data.cnt_taget
-    rospy.loginfo("x=%d y=%d cnt=%d x_high=%x x_low=%x y_high=%x y_low=%x ",data.x ,data.y,data.cnt_taget,data_x_high,data_x_low,data_y_high,data_y_low)
+    rospy.loginfo("x=%d y=%d cnt=%d x_high=%x x_low=%x y_high=%x y_low=%x check=%d ",data.x ,data.y,data.cnt_taget,data_x_high,data_x_low,data_y_high,data_y_low,check)
+
+    if(check>250):
+        check=0
+    else:
+        check=check+1
 
     try:
         port = serial . Serial ( # open port serail0 ,115200
@@ -34,7 +41,7 @@ def callback(data):
         bytesize = serial . EIGHTBITS ,
         timeout = 0.01
         )
-        packed_data_sendUART = struct.pack('B''B''B''B''B''B''B' ,253 , data_x_high , data_x_low , data_y_high  ,data_y_low , data_cnt ,254)
+        packed_data_sendUART = struct.pack('B''B''B''B''B''B''B' ,253 , data_x_high , data_x_low , data_y_high  ,data_y_low , data_cnt ,check)
         port.write(packed_data_sendUART)
     except :
         rospy.logerr("cannnot open port")
