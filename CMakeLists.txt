@@ -1,14 +1,23 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(Visual_ROS)
 
+set(OpenCV_INCLUDE_DIRS "${OpenCV_INSTALL_PATH}/include/opencv;${OpenCV_INSTALL_PATH}/include")
+
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg OpenCV image_transport sensor_msgs cv_bridge)
+find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  image_transport
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  genmsg
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -45,7 +54,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg OpenCV imag
 
 ## Generate messages in the 'msg' folder
 add_message_files(
-   FILES
+    FILES
     data.msg
 #   Message2.msg
  )
@@ -67,8 +76,9 @@ add_message_files(
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-      std_msgs  # Or other packages containing msgs
- )
+   sensor_msgs
+   std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -101,8 +111,8 @@ add_message_files(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES Visual_ROS
-#  CATKIN_DEPENDS other_catkin_pkg
+#  LIBRARIES opencv_tutorials
+#  CATKIN_DEPENDS cv_bridge image_transport roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
@@ -113,14 +123,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
- include
- ${catkin_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
+# include
+  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/Visual_ROS.cpp
+#   src/${PROJECT_NAME}/opencv_tutorials.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -131,9 +140,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(
-    ${PROJECT_NAME}_node src/Visual_ROS_node.cpp
- )
+# add_executable(${PROJECT_NAME}_node src/opencv_tutorials_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,7 +153,9 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(${PROJECT_NAME}_node  ${OpenCV_LIBRARIES}  ${catkin_LIBRARIES})
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -195,10 +204,17 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_Visual_ROS.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_opencv_tutorials.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+
+
+find_package(OpenCV REQUIRED)
+include_directories(${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
+add_executable(${PROJECT_NAME}_node src/Visual_ROS_node.cpp)
+target_link_libraries(${PROJECT_NAME}_node ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})

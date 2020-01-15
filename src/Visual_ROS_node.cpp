@@ -40,6 +40,7 @@ static int bin_cls_thres = 166;
 static int target_max_angle = 20;
 
 Mat Org_Img;//元画像
+Mat Org_Img1;//元画像
 Mat Hsv_Img;//HSV系に変更
 Mat Rgb_Img;//RGB系
 Mat Mask_Img;//mask後の画像
@@ -124,17 +125,17 @@ class Lockon{
 
     		  try{
     		    // ROSからOpenCVの形式にtoCvCopy()で変換。cv_ptr->imageがcv::Matフォーマット。
-   		     	cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+   		     	 cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
     		   	 cv_ptr3 = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
      		  }catch (cv_bridge::Exception& e){
         		ROS_ERROR("cv_bridge exception: %s", e.what());
-       			 return;
+       			return;
     		  }
+
 
 		//ROS画像
 		Org_Img = cv_ptr->image;
-
-
+	
 		Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
 	
 
@@ -143,7 +144,7 @@ class Lockon{
 
 		//RGB
 		cv::cvtColor(Org_Img, Rgb_Img, COLOR_BGR2RGB);
-
+		
 		//RGB(GRAY)
 		cv::cvtColor(Org_Img, Gray_Img, COLOR_BGR2GRAY);
     
@@ -353,14 +354,14 @@ class Lockon{
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
 		cv::imshow("Result", Org_Img);
 
-		cv::imshow("Result2", Bin_Img2);
+		//cv::imshow("Result2", Gray_Img);
 		cv::waitKey(1);
 
 
     
     msg_data.x = result_pt.x - Org_Img.cols/2;
     msg_data.y = -(result_pt.y - Org_Img.rows/2);
-    printf("x = %d y = count=%d %d \n",msg_data.x , msg_data.y,msg_data.cnt_taget );
+    printf("x = %d y = %d count=%d \n",msg_data.x , msg_data.y,msg_data.cnt_taget );
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
     image_pub_.publish(cv_ptr3->toImageMsg());
 
