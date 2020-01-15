@@ -1,0 +1,4 @@
+エラーメッセージ：
+    OpenCV Error: Assertion failed (scn == 3 || scn == 4) in cvtColor, file /home/jetsonnano-hero/opencv-3.2.0/modules/imgproc/src/color.cpp, line 9716
+terminate called after throwing an instance of 'cv::Exception'
+  what():  /home/jetsonnano-hero/opencv-3.2.0/modules/imgproc/src/color.cpp:9716: error: (-215) scn == 3 || scn == 4 in function cvtColor

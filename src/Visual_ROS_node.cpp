@@ -354,7 +354,7 @@ class Lockon{
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
 		cv::imshow("Result", Org_Img);
 
-		//cv::imshow("Result2", Gray_Img);
+		//cv::imshow("Result2", Bin_Img2);
 		cv::waitKey(1);
 
 
