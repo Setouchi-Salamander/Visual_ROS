@@ -215,9 +215,12 @@ class Lockon{
 				printf("nothing \n");
 				result_pt.x = -Org_Img.cols/2;
 				result_pt.y = -Org_Img.rows/2;
+					
+				msg_data.cnt_taget=0;
        				 goto result;
 			}
 
+				msg_data.cnt_taget=1;
 			// 回転した長方形を左から右に並べ替えます
 			sort(RectFirstResult.begin(), RectFirstResult.end(),
 				[](RotatedRect& a1, RotatedRect& a2) {
@@ -358,8 +361,7 @@ class Lockon{
     
     msg_data.x = result_pt.x - Org_Img.cols/2;
     msg_data.y = -(result_pt.y - Org_Img.rows/2);
-    count++;
-    printf("x = %d y = %d \n",msg_data.x , msg_data.y );
+    printf("x = %d y = count=%d %d \n",msg_data.x , msg_data.y,msg_data.cnt_taget );
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
     image_pub_.publish(cv_ptr3->toImageMsg());
 
