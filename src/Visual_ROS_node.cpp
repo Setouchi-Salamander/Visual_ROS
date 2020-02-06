@@ -226,12 +226,9 @@ class Lockon{
 				printf("nothing \n");
 				result_pt.x = -Org_Img.cols/2;
 				result_pt.y = -Org_Img.rows/2;
-<<<<<<< HEAD
 					
 				msg_data.cnt_taget=0;
-=======
        				 goto result;
->>>>>>> develop
 			}
 			else{
 
@@ -387,12 +384,8 @@ class Lockon{
     
     msg_data.x = result_pt.x - Org_Img.cols/2;
     msg_data.y = -(result_pt.y - Org_Img.rows/2);
-<<<<<<< HEAD
     printf("x = %d y = %d count=%d \n",msg_data.x , msg_data.y,msg_data.cnt_taget );
-=======
     count++;
-    printf("x = %d y = %d \n",msg_data.x , msg_data.y );
->>>>>>> develop
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
     image_pub_.publish(cv_ptr3->toImageMsg());
 
