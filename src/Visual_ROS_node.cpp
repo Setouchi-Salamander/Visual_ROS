@@ -230,7 +230,6 @@ class Lockon{
 				msg_data.cnt_taget=0;
 			}
 			else{
-
 			// 回転した長方形を左から右に並べ替えます
 			sort(RectFirstResult.begin(), RectFirstResult.end(),
 				[](RotatedRect& a1, RotatedRect& a2) {
@@ -240,7 +239,7 @@ class Lockon{
 			auto ptangle = [](const Point2f& p1, const Point2f& p2) {
 				return fabs(atan2(p2.y - p1.y, p2.x - p1.x) * 180.0 / CV_PI);
 			};
-
+			msg_data.cnt_taget=0;//変数の初期化
 		///////////////////////////////////// 一致するライトバーの条件 //////////////////////////////////////////////////////
 		//それらを1つずつ比較し、要件を満たしている場合は、ターゲット回転長方形を形成します。
 			for (size_t i = 0; i < RectFirstResult.size() - 1; ++i) {
@@ -341,11 +340,13 @@ class Lockon{
 						// for debug use
 						Point2f vertice[4];
 						obj_rect.points(vertice);
-						for (int i = 0; i < 4; i++)
+						for (int i = 0; i < 4; i++){
 							line(Org_Img, vertice[i], vertice[(i + 1) % 4], Scalar(255, 255, 255), 2);
+							}
 						cv::circle(Org_Img, text_center, 4, Scalar(0, 255, 0), 2);
 						result_pt = Point2f((xi + xj) / 2, (yi + yj) / 2);
-					}
+						msg_data.cnt_taget++;
+						}
 				}
 			}
 
@@ -374,7 +375,7 @@ class Lockon{
 
 		cv::imshow("Result", Org_Img);
 
-		//cv::imshow("Result2", Bin_Img2);
+		cv::imshow("Result2", Bin_Img2);
 		cv::waitKey(1);
 
 
