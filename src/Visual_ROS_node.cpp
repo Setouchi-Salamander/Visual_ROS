@@ -228,7 +228,6 @@ class Lockon{
 				result_pt.y = -Org_Img.rows/2;
 					
 				msg_data.cnt_taget=0;
-       				 goto result;
 			}
 			else{
 
@@ -357,8 +356,6 @@ class Lockon{
 
 		}
 
-	
-	
 	
 		//結果表示
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
