@@ -39,6 +39,16 @@ static float small_armor_wh_threshold = 3.6;
 static int bin_cls_thres = 166;
 static int target_max_angle = 20;
 
+
+int R_LOW = 0;
+int R_HIGH = 255;
+int G_LOW = 0;
+int G_HIGH = 255;
+int B_LOW = 253;
+int B_HIGH = 255;
+int Gray_LOW = 190;
+int Gray_HIGH = 255;
+
 Mat Org_Img;//元画像
 Mat Org_Img1;//元画像
 Mat Hsv_Img;//HSV系に変更
@@ -157,10 +167,10 @@ class Lockon{
 
 		//マスク処理（青）
 		//cv::inRange(Hsv_Img, cv::Scalar(100, 200, 220, 0),cv::Scalar(120, 255, 255, 0), Mask_Img);
-		cv::inRange(Rgb_Img, cv::Scalar(0, 0, 253, 0), cv::Scalar(255, 255, 255, 0), Mask_Img);
+		cv::inRange(Rgb_Img, cv::Scalar(R_LOW, G_LOW, B_LOW, 0), cv::Scalar(R_HIGH, G_HIGH, B_HIGH, 0), Mask_Img);
 	
 		//GRAYの2値化
-		threshold(Gray_Img, Mask_Img2, 190, 255, THRESH_BINARY);
+		threshold(Gray_Img, Mask_Img2, Gray_LOW, Gray_HIGH, THRESH_BINARY);
 	
 		bitwise_and(Mask_Img, Mask_Img2,Wise_Img);
 	
@@ -216,12 +226,15 @@ class Lockon{
 				printf("nothing \n");
 				result_pt.x = -Org_Img.cols/2;
 				result_pt.y = -Org_Img.rows/2;
+<<<<<<< HEAD
 					
 				msg_data.cnt_taget=0;
+=======
+       				 goto result;
+>>>>>>> develop
 			}
 			else{
 
-				msg_data.cnt_taget=1;
 			// 回転した長方形を左から右に並べ替えます
 			sort(RectFirstResult.begin(), RectFirstResult.end(),
 				[](RotatedRect& a1, RotatedRect& a2) {
@@ -352,6 +365,19 @@ class Lockon{
 	
 		//結果表示
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
+
+		cv::createTrackbar("R_LOW", "Result", &R_LOW, 255);
+		cv::createTrackbar("R_HIGH", "Result", &R_HIGH, 255);
+		cv::createTrackbar("G_LOW", "Result", &G_LOW, 255);
+		cv::createTrackbar("G_HIGH", "Result", &G_HIGH, 255);
+		cv::createTrackbar("B_LOW", "Result", &B_LOW, 255);
+		cv::createTrackbar("B_HIGH", "Result", &B_HIGH, 255);
+		cv::createTrackbar("Gray_LOW", "Result", &Gray_LOW, 255);
+		cv::createTrackbar("Gray_HIGH", "Result", &Gray_HIGH, 255);
+
+		R_HIGH = cv::getTrackbarPos("R_HIGH","Result");
+		B_HIGH = cv::getTrackbarPos("B_HIGH","Result");
+
 		cv::imshow("Result", Org_Img);
 
 		//cv::imshow("Result2", Bin_Img2);
@@ -361,7 +387,12 @@ class Lockon{
     
     msg_data.x = result_pt.x - Org_Img.cols/2;
     msg_data.y = -(result_pt.y - Org_Img.rows/2);
+<<<<<<< HEAD
     printf("x = %d y = %d count=%d \n",msg_data.x , msg_data.y,msg_data.cnt_taget );
+=======
+    count++;
+    printf("x = %d y = %d \n",msg_data.x , msg_data.y );
+>>>>>>> develop
 		// エッジ画像をパブリッシュ。OpenCVからROS形式にtoImageMsg()で変換。                                                        
     image_pub_.publish(cv_ptr3->toImageMsg());
 
