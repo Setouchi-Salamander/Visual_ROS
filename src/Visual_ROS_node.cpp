@@ -360,6 +360,7 @@ class Lockon{
 	
 		//結果表示
 		cv::namedWindow("Result",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
+		cv::namedWindow("Result2",WINDOW_AUTOSIZE|WINDOW_FREERATIO);
 
 		cv::createTrackbar("R_LOW", "Result", &R_LOW, 255);
 		cv::createTrackbar("R_HIGH", "Result", &R_HIGH, 255);
@@ -369,12 +370,13 @@ class Lockon{
 		cv::createTrackbar("B_HIGH", "Result", &B_HIGH, 255);
 		cv::createTrackbar("Gray_LOW", "Result", &Gray_LOW, 255);
 		cv::createTrackbar("Gray_HIGH", "Result", &Gray_HIGH, 255);
+		cv::createTrackbar("Min_light", "Result", &min_light, 255);
 
 		R_HIGH = cv::getTrackbarPos("R_HIGH","Result");
 		B_HIGH = cv::getTrackbarPos("B_HIGH","Result");
+		min_light = cv::getTrackbarPos("Min_light", "Result");
 
 		cv::imshow("Result", Org_Img);
-
 		cv::imshow("Result2", Bin_Img2);
 		cv::waitKey(1);
 
